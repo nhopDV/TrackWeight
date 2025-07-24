@@ -151,7 +151,8 @@ final class WeighingViewModel: ObservableObject {
     }
     
     private func completeWeighing() {
-        state = .result(weight: currentPressure)
+        finalWeight = currentPressure - baselinePressure
+        state = .result(weight: finalWeight)
         stopListening()
     }
     
@@ -170,7 +171,8 @@ final class WeighingViewModel: ObservableObject {
             }
             
             if state == .weighing {
-                if hasDetectedItem && finalWeight > 0 {
+                if hasDetectedItem {
+                    finalWeight = currentPressure - baselinePressure
                     state = .result(weight: finalWeight)
                     stopListening()
                 }
