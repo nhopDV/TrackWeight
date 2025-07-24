@@ -46,7 +46,7 @@ final class ScaleViewModel: ObservableObject {
         }
     }
     
-    private func processTouchData(_ touchData: [OMSTouchData]) {
+    func processTouchData(_ touchData: [OMSTouchData]) {
         if touchData.isEmpty {
             hasTouch = false
             currentWeight = 0.0
