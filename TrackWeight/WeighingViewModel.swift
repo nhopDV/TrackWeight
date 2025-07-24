@@ -121,6 +121,10 @@ final class WeighingViewModel: ObservableObject {
     }
     
     private func startStabilityTimer(with weight: Float) {
+        // Capture the weight at the point stability begins so it doesn't
+        // change while the timer is running. This represents the measured
+        // pressure including the object on the trackpad.
+        finalWeight = max(0, weight - baselinePressure)
         // stabilityStartTime and stableWeight are already set in the calling code
         stabilityProgress = 0.0
         isStabilizing = true // Start showing animation since we're already past the 1s delay
@@ -151,7 +155,10 @@ final class WeighingViewModel: ObservableObject {
     }
     
     private func completeWeighing() {
-        state = .result(weight: currentPressure)
+        // `finalWeight` is computed when stability is first detected. Use it to
+        // present a consistent value to the user regardless of any small
+        // fluctuations that may occur afterwards.
+        state = .result(weight: finalWeight)
         stopListening()
     }
     
