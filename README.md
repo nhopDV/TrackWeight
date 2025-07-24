@@ -2,8 +2,7 @@
 
 **Turn your MacBook's trackpad into a precise digital weighing scale**
 
-[TrackWeight](
-https://x.com/KrishRShah/status/1947186835811193330) is a macOS application that transforms your MacBook's trackpad into an accurate weighing scale by leveraging the Force Touch pressure sensors built into modern MacBook trackpads.
+[TrackWeight](https://x.com/KrishRShah/status/1947186835811193330) is a macOS application that transforms your MacBook's trackpad into an accurate weighing scale by leveraging the Force Touch pressure sensors built into modern MacBook trackpads.
 
 https://github.com/user-attachments/assets/7eaf9e0b-3dec-4829-b868-f54a8fd53a84
 
