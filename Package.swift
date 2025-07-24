@@ -7,7 +7,7 @@ let swiftSettings: [SwiftSetting] = [
 ]
 
 let package = Package(
-    name: "OpenMultitouchSupport",
+    name: "TrackWeight",
     platforms: [
         .macOS(.v13)
     ],
@@ -15,6 +15,10 @@ let package = Package(
         .library(
             name: "OpenMultitouchSupport",
             targets: ["OpenMultitouchSupport"]
+        ),
+        .library(
+            name: "TrackWeight",
+            targets: ["TrackWeight"]
         )
     ],
     targets: [
@@ -27,6 +31,17 @@ let package = Package(
             name: "OpenMultitouchSupport",
             dependencies: ["OpenMultitouchSupportXCF"],
             swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "TrackWeight",
+            dependencies: ["OpenMultitouchSupport"],
+            path: "TrackWeight",
+            exclude: ["Assets.xcassets", "Preview Content", "TrackWeight.entitlements"]
+        ),
+        .testTarget(
+            name: "TrackWeightTests",
+            dependencies: ["TrackWeight"],
+            path: "Tests/TrackWeightTests"
         )
     ]
 )
