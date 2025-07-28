@@ -10,6 +10,7 @@ struct ScaleView: View {
     @State private var scaleCompression: CGFloat = 0
     @State private var displayShake = false
     @State private var particleOffset: CGFloat = 0
+    @EnvironmentObject private var unitSettings: UnitSettings
     
     var body: some View {
         if #available(macOS 14.0, *) {
@@ -55,6 +56,7 @@ struct ScaleView: View {
                                 displayShake: $displayShake,
                                 scaleFactor: min(geometry.size.width / 700, geometry.size.height / 500)
                             )
+                            .environmentObject(unitSettings)
                             Spacer()
                         }
                         
@@ -67,7 +69,15 @@ struct ScaleView: View {
                                     .font(.system(size: min(max(geometry.size.width * 0.018, 12), 16), weight: .medium))
                                     .foregroundStyle(.gray)
                             }
-                            
+
+                            Picker("Unit", selection: $unitSettings.unit) {
+                                ForEach(WeightUnit.allCases) { unit in
+                                    Text(unit.symbol).tag(unit)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(width: 120)
+
                             Button(action: {
                                 viewModel.zeroScale()
                             }) {
@@ -135,6 +145,7 @@ struct CartoonScaleView: View {
     @Binding var compression: CGFloat
     @Binding var displayShake: Bool
     let scaleFactor: CGFloat
+    @EnvironmentObject private var unitSettings: UnitSettings
     
     var body: some View {
         VStack(spacing: 0) {
@@ -187,13 +198,14 @@ struct CartoonScaleView: View {
                 
                 // Weight display
                 VStack(spacing: 2) {
-                    Text(String(format: "%.1f", weight))
+                    let displayValue = unitSettings.unit.convertFromGrams(weight)
+                    Text(String(format: "%.1f", displayValue))
                         .font(.system(size: 32 * scaleFactor, weight: .bold, design: .monospaced))
                         .foregroundStyle(.white)
                         .shadow(color: .teal, radius: hasTouch ? 2 : 0)
                         .animation(.easeInOut(duration: 0.2), value: weight)
                     
-                    Text("grams")
+                    Text(unitSettings.unit.symbol)
                         .font(.system(size: 12 * scaleFactor, weight: .medium))
                         .foregroundStyle(.white.opacity(0.8))
                 }

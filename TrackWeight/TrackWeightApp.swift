@@ -10,10 +10,12 @@ import SwiftUI
 @main
 struct TrackWeightApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var unitSettings = UnitSettings()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(unitSettings)
         }
     }
 }

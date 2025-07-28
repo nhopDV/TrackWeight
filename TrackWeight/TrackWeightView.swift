@@ -7,6 +7,7 @@ import SwiftUI
 
 struct TrackWeightView: View {
     @StateObject private var viewModel = WeighingViewModel()
+    @EnvironmentObject private var unitSettings: UnitSettings
     
     var body: some View {
         VStack(spacing: 30) {
@@ -15,6 +16,7 @@ struct TrackWeightView: View {
                 WelcomeView {
                     viewModel.startWeighing()
                 }
+                .environmentObject(unitSettings)
                 
             case .waitingForFinger:
                 FingerTimerView(
@@ -36,11 +38,13 @@ struct TrackWeightView: View {
                     isStabilizing: viewModel.isStabilizing,
                     stabilityProgress: viewModel.stabilityProgress
                 )
+                .environmentObject(unitSettings)
                 
             case .result(let weight):
                 ResultView(weight: weight) {
                     viewModel.restart()
                 }
+                .environmentObject(unitSettings)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -51,6 +55,7 @@ struct TrackWeightView: View {
 
 struct WelcomeView: View {
     let onStart: () -> Void
+    @EnvironmentObject private var unitSettings: UnitSettings
     
     var body: some View {
         VStack(spacing: 25) {
@@ -62,7 +67,7 @@ struct WelcomeView: View {
                 .font(.system(size: 36, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
             
-            Text("Turn your trackpad into a precision scale. Place objects and get their weight in grams.")
+            Text("Turn your trackpad into a precision scale. Place objects and get their weight in \(unitSettings.unit.symbol).")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -201,6 +206,7 @@ struct WeighingView: View {
     let currentPressure: Float
     let isStabilizing: Bool
     let stabilityProgress: Float
+    @EnvironmentObject private var unitSettings: UnitSettings
     
     var body: some View {
         VStack(spacing: 30) {
@@ -209,12 +215,13 @@ struct WeighingView: View {
                 .foregroundStyle(.primary)
             
             VStack(spacing: 10) {
-                Text(String(format: "%.1f", currentPressure))
+                let displayValue = unitSettings.unit.convertFromGrams(currentPressure)
+                Text(String(format: "%.1f", displayValue))
                     .font(.system(size: 64, weight: .bold, design: .monospaced))
                     .foregroundStyle(.blue)
                     .animation(.easeInOut(duration: 0.2), value: currentPressure)
                 
-                Text("grams")
+                Text(unitSettings.unit.symbol)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(.secondary)
             }
@@ -269,6 +276,7 @@ struct WeighingView: View {
 struct ResultView: View {
     let weight: Float
     let onRestart: () -> Void
+    @EnvironmentObject private var unitSettings: UnitSettings
     
     var body: some View {
         VStack(spacing: 30) {
@@ -287,11 +295,12 @@ struct ResultView: View {
                 .foregroundStyle(.secondary)
             
             VStack(spacing: 5) {
-                Text(String(format: "%.1f", weight))
+                let displayValue = unitSettings.unit.convertFromGrams(weight)
+                Text(String(format: "%.1f", displayValue))
                     .font(.system(size: 56, weight: .bold, design: .monospaced))
                     .foregroundStyle(.primary)
                 
-                Text("grams")
+                Text(unitSettings.unit.symbol)
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(.secondary)
             }
